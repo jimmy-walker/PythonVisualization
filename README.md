@@ -1,13 +1,17 @@
 #一.素材
 https://python-graph-gallery.com/
+
 可以考虑从中得到想要的图形，反查。
 
 #二.Matplotlib
 ##基础知识
 ###基本概念
 Figure：绘制面板，画布，其中可以包涵多个Axes（即多个图表）
+
 Axes：本意指坐标轴，这里引申为图表
+
 axis：坐标轴
+
 ![](picture/the anatomy of a matplotlib plot.png)
 
 ##两种基本做法
@@ -213,16 +217,23 @@ ax2=sns.kdeplot(train['金额'][train['是否得到助学金']==0],color='b')
 ###箱形图（boxplot）
 
 "盒式图"或叫"盒须图" "箱形图",，其绘制须使用常用的统计量，能提供有关数据位置和分散情况的关键信息，尤其在比较不同的母体数据时更可表现其差异。
+
 ![](picture/boxplot.png)
+
 如上图所示，标示了图中每条线表示的含义，其中应用到了分位值（数）的概念。
 
 主要包含五个数据节点，将一组数据从大到小排列，分别计算出他的上边缘，上四分位数，中位数，下四分位数，下边缘。
 
 箱形图的绘制步骤：
+
 1、画数轴，度量单位大小和数据批的单位一致，起点比最小值稍小，长度比该数据批的全距稍长。
+
 2、画一个矩形盒，两端边的位置分别对应数据批的上下四分位数（Q3和Q1）。在矩形盒内部中位数（Xm）位置画一条线段为中位线。
+
 3、在Q3+1.5IQR（四分位距）和Q1－1.5IQR处画两条与中位线一样的线段，这两条线段为异常值截断点，称其为内限；在Q3+3IQR和Q1－3IQR处画两条线段，称其为外限。处于内限以外位置的点表示的数据都是异常值，其中在内限与外限之间的异常值为温和的异常值（mild outliers），在外限以外的为极端的异常值(extreme outliers)。四分位距=Q3-Q1。.
+
 4、从矩形盒两端边向外各画一条线段直到不是异常值的最远点，表示该批数据正常值的分布区间。
+
 5、用“〇”标出温和的异常值，用“*”标出极端的异常值。相同值的数据点并列标出在同一数据线位置上，不同值的数据点标在不同数据线位置上。至此一批数据的箱形图便绘出了。统计软件绘制的箱形图一般没有标出内限和外限。
 
 seaborn.boxplot(x=None, y=None, hue=None, data=None, order=None, hue_order=None, orient=None, color=None, palette=None, saturation=0.75, width=0.8, fliersize=5, linewidth=None, whis=1.5, notch=False, ax=None, **kwargs)
@@ -293,21 +304,21 @@ sns.tsplot(data)
 
 1. **Bootstrap resampling.** Seaborn creates resampled versions of your data. Each of these is a 3x8 matrix like yours, but each row is randomly selected from the three rows of your input. For example, one might be:
 
-   ```
-   [[ 0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5]
-    [ 0.5  0.5  0.5  0.5 0.5 0.5  0.5  0.5]
-    [ 0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5]]
-   ```
+```
+[[ 0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5]
+[ 0.5  0.5  0.5  0.5 0.5 0.5  0.5  0.5]
+[ 0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5]]
+```
 
-   and another might be:
+and another might be:
 
-   ```
-   [[ 1.   0.   1.   0.   1.   0.   1.   0. ]
-    [ 0.5  0.5  0.5  0.5 0.5  0.5  0.5  0.5]
-    [ 0.   1.   0.   1.   0.   1.   0.   1. ]]
-   ```
+```
+[[ 1.   0.   1.   0.   1.   0.   1.   0. ]
+[ 0.5  0.5  0.5  0.5 0.5  0.5  0.5  0.5]
+[ 0.   1.   0.   1.   0.   1.   0.   1. ]]
+```
 
-   It creates `n_boot` of these (10000 by default).
+It creates `n_boot` of these (10000 by default).
 
 2. **Central tendency estimation.** Seaborn runs a function on each of the columns of each of the 10000 resampled versions of your data. Because you didn't specify this argument (`estimator`), it feeds the columns to a mean function (`numpy.mean` with `axis=0`). Lots of your columns in your bootstrap iterations are going to have a mean of 0.5, because they will be things like [0, 0.5, 1], [0.5, 1, 0], [0.5, 0.5, 0.5], etc. but you will also have some [1,1,0] and even some [1,1,1] which will result in higher means.
 
@@ -334,7 +345,7 @@ sns.tsplot(data)
 
 ##六.Reference
 
-[10分钟python图表绘制 | seaborn入门](https://zhuanlan.zhihu.com/p/24464836)
-[Seaborn(sns)官方文档学习笔记](http://www.jianshu.com/p/5518f669e368)
-[python seaborn画图](http://blog.csdn.net/suzyu12345/article/details/69029106)
-[tsplot的置信度计算](https://stackoverflow.com/questions/29481134/how-are-the-error-bands-in-seaborn-tsplot-calculated)
+- [10分钟python图表绘制 | seaborn入门](https://zhuanlan.zhihu.com/p/24464836)
+- [Seaborn(sns)官方文档学习笔记](http://www.jianshu.com/p/5518f669e368)
+- [python seaborn画图](http://blog.csdn.net/suzyu12345/article/details/69029106)
+- [tsplot的置信度计算](https://stackoverflow.com/questions/29481134/how-are-the-error-bands-in-seaborn-tsplot-calculated)
