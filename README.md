@@ -12,6 +12,10 @@ Axes：本意指坐标轴，这里引申为图表
 
 axis：坐标轴
 
+![](picture/figureandaxes.png)
+
+![](picture/figureandaxes.jpg)
+
 ![](picture/the anatomy of a matplotlib plot.png)
 
 ##两种基本做法
