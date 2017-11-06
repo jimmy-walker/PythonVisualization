@@ -125,8 +125,182 @@ If True, limit spines to the smallest and largest major tick on each non-despine
 
 如果需要分面绘图，应该使用seaborn的FacetGrid对象，seaborn的一般的绘图函数是没有分面这个参数的。
 
+##四.三维图
 
-##四.函数图
+### 1.相关函数
+####1.meshgrid函数:需要用numpy的meshgrid函数生成一个三维网格，即，x轴由第一个参数指定，y轴由第二个参数指定。并返回两个增维后的矩阵，今后就用这两个矩阵来生成图像。
+meshgrid用于从数组a和b产生网格。生成的网格矩阵A和B大小是相同的。它也可以是更高维的。
+[A,B]=meshgrid(a,b)
+生成size(b)Xsize(a)大小的矩阵A和B。它相当于a从一行重复增加到size(b)行，把b转置成一列再重复增加到size(a)列。因此命令等效于：
+A=ones(size(b))*a;
+B=b'*ones(size(a))
+
+![](picture/meshgrid.jpg)
+
+####2.contourf函数：画有填充的等高线。与contour的参数基本一致
+
+level表示分几层（等高线的密集程度），然后每层颜色相同，比如8代表被分为10个部分；alpha是渐变透明度
+
+####3.contour函数：不填充，只画等高线。返回一个对象，这个对象一般要保留下来个供后续的加工细化。
+
+比如这里就用clabel函数来在等高线图上表示高度了。
+
+####4.clabel函数：标示等高线图，参数需要是contour的返回对象
+
+```python
+from matplotlib.pyplot import *
+def f(x,y):
+    return (1-x/2+x**5+y**3)*np.exp(-x**2-y**2)
+n = 256
+x = np.linspace(-3,3,n)
+y = np.linspace(-3,3,n)
+X,Y = np.meshgrid(x,y)
+contourf(X, Y, f(X,Y), 8, alpha=.75, cmap=cm.hot)
+C = contour(X, Y, f(X,Y), 8, colors='black', linewidth=.5)
+clabel(C, inline=1, fontsize=10)
+show()
+```
+
+####5.colorbar函数：添加色标，参数需要是contourf的返回对象
+```python
+fig, ax = plt.subplots(1, 2)
+levels = np.linspace(0, 1, 10)
+cs = ax[0].contourf(u, v, wilson_score(u, u + v), levels=levels)
+cb1 = fig.colorbar(cs, ax=ax[0], format="%.2f") #如果没有ax指定，会在最后端才显示
+```
+
+####6.plot_surface函数：画3D表面图
+
+需要引入3D包：`from mpl_toolkits.mplot3d import Axes3D`，并且在add_subplots中要加入`projection='3d'`
+
+配置很关键：`rstride=1, cstride=1, cmap='jet',linewidth=0`
+
+按上方旋转键，需要不断旋转才能找到好的视角。
+![](picture/wilson.jpg)
+
+代码详见附录页的代码：
+```python
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+import numpy as np
+
+def wilson_score(pos, total, p_z=2.):
+    """
+    威尔逊得分计算函数
+    参考：https://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval
+    :param pos: 正例数
+    :param total: 总数
+    :param p_z: 正太分布的分位数
+    :return: 威尔逊得分
+    """
+    pos_rat = pos * 1. / total * 1.  # 正例比率
+    score = (pos_rat + (np.square(p_z) / (2. * total))
+             - ((p_z / (2. * total)) * np.sqrt(4. * total * (1. - pos_rat) * pos_rat + np.square(p_z)))) / \
+            (1. + np.square(p_z) / total)
+    return score
+
+
+def wilson_score_norm(mean, var, total, p_z=2.):
+    """
+    威尔逊得分计算函数 正态分布版 支持如5星评价，或百分制评价
+    :param mean: 均值
+    :param var: 方差
+    :param total: 总数
+    :param p_z: 正太分布的分位数
+    :return: 
+    """
+    # 归一化，符合正太分布的分位数
+    score = (mean + (np.square(p_z) / (2. * total))
+             - ((p_z / (2. * total)) * np.sqrt(4. * total * var + np.square(p_z)))) / \
+            (1 + np.square(p_z) / total)
+    return score
+
+value = np.linspace(0.01, 100, 1000)
+u, v = np.meshgrid(value, value)
+levels = np.linspace(0, 1, 10)
+
+fig = plt.figure()
+#2行2列的子图中的第一个，第一行的第一列
+ax1 = fig.add_subplot(1,2,1)
+#画等值线云图
+c1 = plt.contourf(u, v, wilson_score(u, u + v), cmap='jet',levels=levels)
+ax1.set_xlabel(u'pos')
+ax1.set_ylabel(u'neg')
+#添加色标
+fig.colorbar(c1)
+#添加标题
+plt.title('wilson(z=2)')
+
+#d第二个子图，第一行的第二列
+ax2 = fig.add_subplot(1,2,2,projection='3d')
+s2 = ax2.plot_surface(u, v, wilson_score(u, u + v), rstride=10, cstride=10, cmap='jet',linewidth=0)
+ax2.set_xlabel(u'pos')
+ax2.set_ylabel(u'neg')
+ax2.set_zlabel(u'score')
+
+plt.show()
+```
+
+###2.具体画法
+
+```python
+import matplotlib.pylab as plt
+import numpy as np
+from mpl_toolkits.mplot3d import Axes3D
+ 
+def f(x,y):
+    z = (1-x/2+x**5+y**3)*np.exp(-x**2-y**2)
+    return z
+ 
+n = 256
+ 
+#均匀生成-3到3之间的n个值
+x = np.linspace(-3,3,n)
+y = np.linspace(-3,3,n)
+#生成网格数据
+X,Y = np.meshgrid(x,y)
+ 
+fig = plt.figure()
+#2行2列的子图中的第一个，第一行的第一列
+subfig1 = fig.add_subplot(2,2,1)
+#画等值线云图
+surf1 = plt.contourf(X, Y, f(X,Y))
+#添加色标
+fig.colorbar(surf1)
+#添加标题
+plt.title('contourf+colorbar')
+ 
+#d第二个子图，第一行的第二列
+subfig2 = fig.add_subplot(2,2,2)
+#画等值线
+surf2 = plt.contour(X, Y, f(X,Y))
+#等值线上添加标记
+plt.clabel(surf2, inline=1, fontsize=10, cmap='jet')
+#添加标题
+plt.title('contour+clabel')
+ 
+#第三个子图，第二行的第一列
+subfig3 = fig.add_subplot(2,2,3,projection='3d')
+#画三维边框
+surf3 = subfig3.plot_wireframe(X, Y, f(X,Y), rstride=10, cstride=10, color = 'y')
+#画等值线
+plt.contour(X, Y, f(X,Y))
+#设置标题
+plt.title('plot_wireframe+contour')
+ 
+#第四个子图，第二行的第二列
+subfig4 = fig.add_subplot(2,2,4,projection='3d')
+#画三维图
+surf4 = subfig4.plot_surface(X, Y, f(X,Y), rstride=1, cstride=1, cmap='jet',linewidth=0)
+#设置色标
+fig.colorbar(surf4)
+#设置标题
+plt.title('plot_surface+colorbar')
+ 
+plt.show()
+```
+
+##五.函数图
 
 ###大致分类，详见onenote中的摘抄
 
@@ -328,7 +502,7 @@ It creates `n_boot` of these (10000 by default).
 
 3. **Confidence interval determination.** For each column, seaborn sorts the 1000 estimates of the means calculated from each resampled version of the data from smallest to greatest, and picks the ones which represent the upper and lower CI. By default, it's using a 68% CI, so if you line up all 1000 mean estimates, then it will pick the 160th and the 840th. (840-160 = 680, or 68% of 1000).
 
-##五.解决错误（后来发现一招使用虚拟环境即可避免环境配置错误了conda install anaconda即可解决）
+##六.解决错误（后来发现一招使用虚拟环境即可避免环境配置错误了conda install anaconda即可解决）
 
 ### seaborn报错：slice indices must be integers or None or have an __index__ method
 
@@ -353,3 +527,4 @@ It creates `n_boot` of these (10000 by default).
 - [Seaborn(sns)官方文档学习笔记](http://www.jianshu.com/p/5518f669e368)
 - [python seaborn画图](http://blog.csdn.net/suzyu12345/article/details/69029106)
 - [tsplot的置信度计算](https://stackoverflow.com/questions/29481134/how-are-the-error-bands-in-seaborn-tsplot-calculated)
+- [威尔逊区间python代码](http://www.jianshu.com/p/4d2b45918958)
