@@ -179,6 +179,8 @@ cb1 = fig.colorbar(cs, ax=ax[0], format="%.2f") #如果没有ax指定，会在�
 ![](picture/wilson.jpg)
 
 代码详见附录页的代码：
+
+
 ```python
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
@@ -214,6 +216,26 @@ def wilson_score_norm(mean, var, total, p_z=2.):
              - ((p_z / (2. * total)) * np.sqrt(4. * total * var + np.square(p_z)))) / \
             (1 + np.square(p_z) / total)
     return score
+
+def test_of_values():
+    """
+    五星评价的归一化实例，百分制类似
+    :return: 总数，均值，方差
+    """
+    max = 5.  # 五星评价的最大值
+    min = 1.  # 五星评价的最小值
+    values = np.array([1., 2., 3., 4., 5.])  # 示例
+
+    norm_values = (values - min) / (max - min)  # 归一化
+    total = norm_values.size  # 总数
+    mean = np.mean(norm_values)  # 归一化后的均值
+    var = np.var(norm_values)  # 归一化后的方差
+    return total, mean, var
+
+#test_of_values and wilson_score_norm
+total, mean, var = test_of_values()
+print ("total: %s, mean: %s, var: %s" % (total, mean, var))
+print ('score: %s' % wilson_score_norm(mean=mean, var=var, total=total))
 
 value = np.linspace(0.01, 100, 1000)
 u, v = np.meshgrid(value, value)
