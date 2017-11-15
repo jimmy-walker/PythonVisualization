@@ -44,6 +44,16 @@ plt.show()
 
 ###add_subplots和add_axes效果差不多，只是返回值不一样。
 
+##画多线在同一副图内
+标出颜色即可。
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+plt.plot(x, np.exp(x*(-0.1)), 'b')
+plt.plot(x, np.exp(np.exp(x*(-0.1)-1)), 'b--')
+plt.show()
+```
+
 #三.Seaborn
 
 ##常用流程
