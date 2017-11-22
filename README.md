@@ -58,7 +58,7 @@ plt.show()
 
 ##5）matplotlib中文显示的问题
 
-第一步:下载字体:msyh.ttf (微软雅黑)放在系统字体文件夹下:/usr/share/fonts。同时我也复制了下放在matplotlib的字体文件夹下了(不知道这一步是不是必须)/usr/local/lib/python3.5/dist-packages/matplotlib/mpl-data/fonts/ttf/
+第一步:下载字体:[msyh.ttf](https://github.com/jimmy-walker/PythonVisualization) (微软雅黑)放在系统字体文件夹下:/usr/share/fonts。同时我也复制了下放在matplotlib的字体文件夹下了(不知道这一步是不是必须)/usr/local/lib/python3.5/dist-packages/matplotlib/mpl-data/fonts/ttf/
 
 第二步：修改matplotlib配置文件：sudo vim /usr/local/lib/python3.5/dist-packages/matplotlib/mpl-data/matplotlibrc删除font.family和font.sans-serif两行前的#，并在font.sans-serif后添加中文字体Microsoft YaHei, ...(其余不变)
 
