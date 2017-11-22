@@ -4,7 +4,7 @@ https://python-graph-gallery.com/
 可以考虑从中得到想要的图形，反查。
 
 #二.Matplotlib
-##基础知识
+##1）基础知识
 ###基本概念
 Figure：绘制面板，画布，其中可以包涵多个Axes（即多个图表）
 
@@ -18,7 +18,7 @@ axis：坐标轴
 
 ![](picture/the anatomy of a matplotlib plot.png)
 
-##两种基本做法
+##2）两种基本做法
 ###1.fig=plt.figure，然后ax = fig.add_subplots，最后ax画图。（适合多图）
 ```python
 import matplotlib.pyplot as plt
@@ -39,20 +39,31 @@ plt.xlim(0.5, 4.5)
 plt.show()
 ```
 
-##subplot的用法
+##3）subplot的用法
 ###subplots比subplot可以返回多个ax。
 
 ###add_subplots和add_axes效果差不多，只是返回值不一样。
 
-##画多线在同一副图内
+##4）画多线在同一副图内
 标出颜色即可。
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
+plt.figure(figsize=(20,10)) #设置图片大小，默认为# c.InlineBackend.rc = {'font.size': 10, 'figure.figsize': (6.0, 4.0), 'figure.facecolor': 'white', 'savefig.dpi': 72, 'figure.subplot.bottom': 0.125, 'figure.edgecolor': 'white'}
+plt.rcParams.update({'font.size': 22}) #设置字体大小
 plt.plot(x, np.exp(x*(-0.1)), 'b')
 plt.plot(x, np.exp(np.exp(x*(-0.1)-1)), 'b--')
 plt.show()
 ```
+
+##5）matplotlib中文显示的问题
+
+第一步:下载字体:msyh.ttf (微软雅黑)放在系统字体文件夹下:/usr/share/fonts。同时我也复制了下放在matplotlib的字体文件夹下了(不知道这一步是不是必须)/usr/local/lib/python3.5/dist-packages/matplotlib/mpl-data/fonts/ttf/
+
+第二步：修改matplotlib配置文件：sudo vim /usr/local/lib/python3.5/dist-packages/matplotlib/mpl-data/matplotlibrc删除font.family和font.sans-serif两行前的#，并在font.sans-serif后添加中文字体Microsoft YaHei, ...(其余不变)
+
+第三步：删除~/.cache/matplotlib下文件fontList.py3k.cache
+
 
 #三.Seaborn
 
@@ -560,3 +571,4 @@ It creates `n_boot` of these (10000 by default).
 - [python seaborn画图](http://blog.csdn.net/suzyu12345/article/details/69029106)
 - [tsplot的置信度计算](https://stackoverflow.com/questions/29481134/how-are-the-error-bands-in-seaborn-tsplot-calculated)
 - [威尔逊区间python代码](http://www.jianshu.com/p/4d2b45918958)
+- [matplotlib图例中文乱码](https://www.zhihu.com/question/25404709/answer/128171562)
