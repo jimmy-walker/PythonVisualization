@@ -64,6 +64,21 @@ plt.show()
 
 第三步：删除~/.cache/matplotlib下文件fontList.py3k.cache
 
+##6）增加图例
+使用label和legend即可显示，注意配合字体。
+```python
+x = [i for i in range(30)]
+plt.figure(figsize=(20,10))
+plt.rcParams.update({'font.size': 22})
+plt.plot(x, x1, 'b', label= "%2.2f"%result1)
+plt.plot(x, x2, 'g', label= "%2.2f"%result2)
+plt.plot(x, x3, 'r', label= "%2.2f"%result3)
+plt.xlabel("days")
+plt.ylabel("search count")
+plt.legend(loc="best")
+plt.title("contrast by formula")
+plt.show()
+```
 
 #三.Seaborn
 
