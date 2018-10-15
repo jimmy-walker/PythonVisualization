@@ -396,6 +396,7 @@ plt.show()
 
 
 ###直方图（distplot）：观察单变量分布
+**J注意如果整个单变量变化非常大，建议使用分位数了解变量的变化范围，避免图像过于拥挤：df.quantile(.1)**
 
 seaborn的**displot()**集合了**matplotlib的hist()**与核函数估计**kdeplot**的功能，增加了**rugplot**分布观测条显示与利用scipy库fit拟合参数分布的新颖用途。具体用法如下：
 
