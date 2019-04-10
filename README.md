@@ -30,6 +30,44 @@ ax.set_xlim(0.5, 4.5)
 plt.show()
 ```
 
+```python
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+
+data = pd.read_csv("2.txt", sep="\t")
+num = 10
+raw = data[data["ivar2"]<=num].sort_values("ivar2")
+
+def Least_squares(x,y,num):
+    x_ = x.mean()
+    y_ = y.mean()
+    m = np.zeros(1)
+    n = np.zeros(1)
+    k = np.zeros(1)
+    p = np.zeros(1)
+    for i in np.arange(num):
+        k = (x[i]-x_)* (y[i]-y_)
+        m += k
+        p = np.square( x[i]-x_ )
+        n = n + p
+    a = m/n
+    b = y_ - a* x_
+    return a,b
+a,b = Least_squares(raw["ivar2"].values, raw["c"].values, num)
+
+raw["new"] = raw["ivar2"]*a + b
+
+fig = plt.figure(figsize=(10, 5), facecolor='w')
+ax = fig.add_subplot(111)
+ax.plot(raw["ivar2"], raw["c"], 'ro',lw=2, markersize=6)
+ax.plot(raw["ivar2"], raw["new"], color='lightblue', linewidth=3)
+plt.grid(b=True, ls=':')
+ax.set_xlim(0,num+1)
+plt.title("y = {0}*x + {1}".format(a[0],b[0]))
+plt.show()
+```
+
 ###2.直接plt.plot，最后plt画图。实际上fig和ax都存在，但是plt将自动将其画在对应的fig和ax上。（适合简单的单图）。
 ```python
 import matplotlib.pyplot as plt
